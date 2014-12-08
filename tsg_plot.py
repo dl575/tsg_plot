@@ -35,6 +35,9 @@ class PlotOptions:
     self.valid_plot_types = ["bar", "stacked_bar", "scatter_bar", "scatter"]
     self.plot_type = "bar"
 
+    # Error bars, lists of 2 lists. The first contains the minimums to draw and the second contains the maximums to draw.
+    self.errorbars = None
+
     # if true, draws an arrow from the earlier to later
     self.scatter_bar_arrow = False
     # only draw arrow head if the length is this long
@@ -340,6 +343,15 @@ def add_bar_plot( ax, opt ):
 
     if opt.plot_type == "stacked_bar":
       bottom += bar_data[i]
+
+  if opt.errorbars:
+    min_errors = np.array(opt.errorbars[0]).transpose()
+    max_errors = np.array(opt.errorbars[1]).transpose()
+    for i in range(len(indexes)):
+      # Calculate center point of error bar
+      error_indexes = [x + width/2.0 for x in indexes[i]]
+      # Plot error bars
+      plt.errorbar(error_indexes, bar_data[i], yerr=[min_errors[i], max_errors[i]], fmt='.', markersize=0, color='k')
 
   # we force that there is no empty space to the right
   ax.set_xlim( (0.0, 0.0 + num_cat ) )
