@@ -28,8 +28,8 @@ class PlotOptions:
 
     # default values
     self.title = "test bar plot"
-    self.ylabel = "y axis"
-    self.xlabel = "x axis"
+    self.ylabel = None
+    self.xlabel = None
     self.bar_width = 0.70
 
     self.valid_plot_types = ["bar", "stacked_bar", "scatter_bar", "scatter"]
@@ -99,7 +99,7 @@ class PlotOptions:
     #self.colors = [ 'r', 'b', 'g', 'y', 'c', 'm', 'k', 'w' ]
     # Selected from colobrewer2.org for 9 categories, qualitative, print friendly
     self.colors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']
-    self.hatch  = [ ' ' ] * 9
+    self.hatch = None
     self.symbols = [ 'o', 'd', '^', 's', 'p', '*', 'x' ]
 
     random.seed( 0xdeadbeef )
@@ -324,12 +324,20 @@ def add_bar_plot( ax, opt ):
                     color='k')
 
     else:
-      bars.append( ax.bar( indexes[i], bar_data[i], width, \
-                           color=opt.get_color(i), \
-                           linewidth=bar_linewidth, \
-                           bottom=bottom,
-                           hatch = opt.hatch[i]
-                          ) )
+      if opt.hatch:
+        bars.append( ax.bar( indexes[i], bar_data[i], width, \
+                             color=opt.get_color(i), \
+                             linewidth=bar_linewidth, \
+                             bottom=bottom,
+                             hatch = opt.hatch[i]
+                            ) )
+      else:
+        bars.append( ax.bar( indexes[i], bar_data[i], width, \
+                             color=opt.get_color(i), \
+                             linewidth=bar_linewidth, \
+                             bottom=bottom
+                            ) )
+
     if opt.plot_type == "stacked_bar":
       bottom += bar_data[i]
 
@@ -407,8 +415,10 @@ def set_common( ax, opt ):
   if not opt.paper_mode:
     ax.set_title( opt.title )
 
-  ax.set_xlabel( opt.xlabel, fontsize=opt.fontsize )
-  ax.set_ylabel( opt.ylabel, fontsize=opt.fontsize )
+  if opt.xlabel:
+    ax.set_xlabel( opt.xlabel, fontsize=opt.fontsize )
+  if opt.ylabel:
+    ax.set_ylabel( opt.ylabel, fontsize=opt.fontsize )
 
   if opt.paper_mode:
     # enable grid
