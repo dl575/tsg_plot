@@ -85,6 +85,11 @@ class PlotOptions:
     self.legend_ncol = 1
     # Position of legend (x, y, width, height)
     self.legend_bbox = (0., 1.05, 1., 0.1)
+    # Spacing and sizing of text/handles
+    self.legend_columnspacing = None
+    self.legend_handlelength = None
+    self.legend_handletextpad = None
+
 
     self.figsize = (8, 6) # (width, height) in inches
 
@@ -409,7 +414,10 @@ def set_legend( ax, opt, legend, legend_labels ):
     # using fancy translucent legend box
     leg = ax.legend( legend, \
                      legend_labels, loc='best', fancybox=True, \
-                     prop={'size':opt.fontsize} )
+                     prop={'size':opt.fontsize} , \
+                     columnspacing=opt.legend_columnspacing, \
+                     handlelength=opt.legend_handlelength, \
+                     handletextpad=opt.legend_handletextpad)
     leg.get_frame().set_alpha( 0.5 )
   else:
     leg = ax.legend( legend, \
@@ -417,7 +425,10 @@ def set_legend( ax, opt, legend, legend_labels ):
                      bbox_to_anchor=opt.legend_bbox, \
                      ncol=opt.legend_ncol, \
                      borderaxespad=0., \
-                     prop={'size':opt.fontsize} )
+                     prop={'size':opt.fontsize} , \
+                     columnspacing=opt.legend_columnspacing, \
+                     handlelength=opt.legend_handlelength, \
+                     handletextpad=opt.legend_handletextpad)
     # we dissappear the box
     leg.get_frame().set_color("white")
 
