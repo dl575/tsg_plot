@@ -107,7 +107,7 @@ class PlotOptions:
     #self.colors = [ 'r', 'b', 'g', 'y', 'c', 'm', 'k', 'w' ]
     # Selected from colobrewer2.org for 9 categories, qualitative, print friendly
     self.colors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']
-    self.hatch = None
+    self.hatch = []
     self.symbols = [ 'o', 'd', '^', 's', 'p', '*', 'x' ]
 
     random.seed( 0xdeadbeef )
@@ -119,6 +119,12 @@ class PlotOptions:
       return self.colors[idx]
     else:
       return "#{:06x}".format( random.randint( 0, 0xffffff ) )
+  def get_hatch( self, idx ):
+    # get a hatch from hatch array if idx is small, otherwise, gets no hatch
+    if idx < len( self.hatch ):
+      return self.hatch[idx]
+    else:
+      return ''
 
 
 def add_plot( opt ):
@@ -332,19 +338,12 @@ def add_bar_plot( ax, opt ):
                     color='k')
 
     else:
-      if opt.hatch:
-        bars.append( ax.bar( indexes[i], bar_data[i], width, \
-                             color=opt.get_color(i), \
-                             linewidth=bar_linewidth, \
-                             bottom=bottom,
-                             hatch = opt.hatch[i]
-                            ) )
-      else:
-        bars.append( ax.bar( indexes[i], bar_data[i], width, \
-                             color=opt.get_color(i), \
-                             linewidth=bar_linewidth, \
-                             bottom=bottom
-                            ) )
+      bars.append( ax.bar( indexes[i], bar_data[i], width, \
+                           color=opt.get_color(i), \
+                           linewidth=bar_linewidth, \
+                           bottom=bottom,
+                           hatch = opt.get_hatch(i)
+                          ) )
 
     if opt.plot_type == "stacked_bar":
       bottom += bar_data[i]
