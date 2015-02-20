@@ -8,6 +8,7 @@ Classes:
 
 Functions:
   add_plot( opt )
+  add_line_plot( ax, opt )
   add_scatter_plot( ax, opt )
   add_bar_plot( ax, opt )
   set_legend( ax, opt, legend, legend_labels )
@@ -32,7 +33,7 @@ class PlotOptions:
     self.xlabel = None
     self.bar_width = 0.70
 
-    self.valid_plot_types = ["bar", "stacked_bar", "scatter_bar", "scatter"]
+    self.valid_plot_types = ["bar", "stacked_bar", "scatter_bar", "scatter", "line"]
     self.plot_type = "bar"
 
     # Error bars, lists of 2 lists. The first contains the minimums to draw and the second contains the maximums to draw.
@@ -155,7 +156,9 @@ def add_plot( opt ):
   else:
     ax = opt.fig.add_subplot( opt.num_rows, opt.num_cols, opt.plot_idx )
 
-  if opt.plot_type == "scatter":
+  if opt.plot_type == "line":
+    add_line_plot( ax, opt )
+  elif opt.plot_type == "scatter":
     add_scatter_plot( ax, opt )
   else:
     add_bar_plot( ax, opt )
@@ -178,6 +181,41 @@ def add_plot( opt ):
         plt.savefig( file )
   elif opt.show:
     plt.show()
+
+
+def add_line_plot( ax, opt ):
+
+  lines = []
+  for i in xrange( len( opt.data ) ):
+    c = list(opt.data[ i ])
+    line, = ( ax.plot( c, \
+                     marker=opt.symbols[i], \
+                     color=opt.get_color(i), \
+                     zorder=5+i ) )
+    lines.append(line)
+
+  if opt.yrange is not None:
+    ax.set_ylim( opt.yrange )
+  if opt.xrange is not None:
+    ax.set_xlim( opt.xrange )
+
+  legend = []
+  legend_labels = []
+
+  # if no labels specified, create blank entries to generate legend
+  if not opt.labels:
+    opt.labels = [" "]*len(lines)
+  for i in xrange( len( lines ) ):
+    if opt.labels[i] is not None and opt.labels[i] != "":
+      legend.append( lines[i] )
+      legend_labels.append( opt.labels[i] )
+
+  set_legend( ax, opt, legend, legend_labels )
+  set_common( ax, opt )
+
+  ax.xaxis.grid(True)
+  ax.yaxis.grid(True)
+
 
 def add_scatter_plot( ax, opt ):
 
