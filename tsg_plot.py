@@ -479,12 +479,15 @@ def set_legend( ax, opt, legend, legend_labels ):
 def set_common( ax, opt ):
   # Title and Legend stuff.
   if not opt.paper_mode:
-    ax.set_title( opt.title )
+    ax.set_title( opt.title, fontsize=opt.fontsize )
 
+  # Set labels for axes
   if opt.xlabel:
     ax.set_xlabel( opt.xlabel, fontsize=opt.fontsize )
   if opt.ylabel:
     ax.set_ylabel( opt.ylabel, fontsize=opt.fontsize )
+  # Set font size for axes
+  ax.tick_params( labelsize=opt.fontsize )
 
   if opt.paper_mode:
     # enable grid
