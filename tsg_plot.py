@@ -126,6 +126,12 @@ class PlotOptions:
       return self.hatch[idx]
     else:
       return ''
+  def get_symbol( self, idx) :
+    # get a symbol from symbol array if idx is small, otherwise, default is 'o'
+    if idx < len( self.symbols ):
+      return self.symbols[idx]
+    else:
+      return 'o'
 
 
 def add_plot( opt ):
@@ -242,7 +248,7 @@ def add_scatter_plot( ax, opt ):
     # zorder specifies the ordering of elements, the higher the more
     # visible
     scatters.append( ax.scatter( x, y, \
-                               marker=opt.symbols[i], \
+                               marker=opt.get_symbol(i), \
                                color=opt.get_color(i), \
                                zorder=5+i ) )
 
@@ -346,7 +352,7 @@ def add_bar_plot( ax, opt ):
     if opt.plot_type == "scatter_bar":
       # bars are actually scatters
       bars.append( ax.scatter( indexes[i], bar_data[i], \
-                               marker=opt.symbols[i], \
+                               marker=opt.get_symbol(i), \
                                color=opt.get_color(i), \
                                s=40, zorder=i+5 ) )
       # we draw to this if arrows are allowed and the index is larger than
