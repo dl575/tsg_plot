@@ -208,7 +208,6 @@ attribute_dict = \
  'normalize_line': None,
  'num_cols': 1,
  'num_rows': 1,
- 'paper_mode': True,
  'plot_idx': 1,
  'rotate_labels': True,
  'rotate_labels_angle': -45,
@@ -217,7 +216,6 @@ attribute_dict = \
  'scatter_bar_arrow_minlen': 0.2,
  'show': False,
  'symbols': ['o', 'd', '^', 's', 'p', '*', 'x'],
- 'title': 'XLOOPS Stall Breakdowns',
  'xlabel': '',
  'ylabel': 'Ratio of Stalls and Squashes',
  'yrange': [0, 1]}

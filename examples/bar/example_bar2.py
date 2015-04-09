@@ -25,7 +25,6 @@ attribute_dict = \
     {
         'show' : False,
         'file_name' : 'example_bar2.pdf',
-        'paper_mode' : True,
         'figsize' : (3.5, 2.5),
         'xlabel' : 'Functions',
         'ylabel' : 'Value',

@@ -19,7 +19,6 @@ attribute_dict = \
         'show' : False,
         'file_name' : 'example_scatter2.pdf',
         'plot_type' : 'scatter',
-        'paper_mode' : True,
         'figsize' : (3.5, 3.5),
         'legend_ncol' : 3,
         'xlabel' : 'x',

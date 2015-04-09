@@ -26,7 +26,6 @@ def plot(data):
           'show' : False,
           'file_name' : 'example_line.pdf',
           'plot_type' : 'line',
-          'paper_mode' : True,
           'figsize' : (7.0, 3.0),
           'legend_ncol' : 3,
           'xlabel' : 'x',

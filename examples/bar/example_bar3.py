@@ -68,7 +68,6 @@ attribute_dict = \
  'normalize_line': 1,
  'num_cols': 1,
  'num_rows': 1,
- 'paper_mode': True,
  'plot_idx': 1,
  'rotate_labels': True,
  'rotate_labels_angle': -45,
@@ -78,7 +77,6 @@ attribute_dict = \
  'show': False,
  'stacked': False,
  'symbols': ['o', 'd', '^', 's', 'p', '*', 'x'],
- 'title': 'Speedups',
  'xlabel': '',
  'ylabel': 'Speedup Normalized to io',
  'yrange': (0.75, 4.25)}

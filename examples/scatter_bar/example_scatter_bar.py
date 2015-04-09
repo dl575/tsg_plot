@@ -26,7 +26,6 @@ attribute_dict = \
         'show' : False,
         'file_name' : 'example_scatter_bar.pdf',
         'plot_type' : 'scatter_bar',
-        'paper_mode' : True,
         'figsize' : (3.5, 2.5),
         'xlabel' : 'Functions',
         'ylabel' : 'Value',

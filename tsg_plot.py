@@ -28,7 +28,7 @@ class PlotOptions:
   def __init__( self ):
 
     # default values
-    self.title = "test bar plot"
+    self.title = None
     self.ylabel = None
     self.xlabel = None
     self.bar_width = 0.70
@@ -77,9 +77,6 @@ class PlotOptions:
 
     # if true, just show the plot, don't save
     self.show = True
-
-    # paper mode squishes everything
-    self.paper_mode = False
 
     self.legend_enabled = True
     # the following are for fine tweaking of legend in paper mode
@@ -140,13 +137,11 @@ def add_plot( opt ):
   if opt.plot_type not in opt.valid_plot_types:
     print "Unrecognized plot type: %s" % opt.plot_type
     sys.exit(1)
-
-  if opt.paper_mode:
-    # use a sans-serif font
-    #plt.rcParams['pdf.use14corefonts'] = True
-    plt.rcParams['font.size'] = 8
-    plt.rcParams['font.family'] = 'sans-serif'
-    plt.rcParams['font.sans-serif'] = ['Arial']
+  
+  # Set font
+  plt.rcParams['font.size'] = opt.fontsize
+  plt.rcParams['font.family'] = 'sans-serif'
+  plt.rcParams['font.sans-serif'] = ['Arial']
 
   if opt.fig == None:
     opt.fig = plt.figure( figsize=opt.figsize )
@@ -175,16 +170,12 @@ def add_plot( opt ):
 
   opt.ax = ax
 
-  if opt.paper_mode:
-    plt.tight_layout()
+  plt.tight_layout()
 
   if opt.file_name != None and opt.file_name != "":
     for file in opt.file_name.split():
       print "saving", file
-      if opt.paper_mode:
-        plt.savefig( file, bbox_inches="tight" )
-      else:
-        plt.savefig( file )
+      plt.savefig( file, bbox_inches="tight" )
   elif opt.show:
     plt.show()
 
@@ -346,8 +337,7 @@ def add_bar_plot( ax, opt ):
 
   bottom = np.array( [0.0] * num_cat )
 
-  # use narrower line widths for bars on paper mode
-  bar_linewidth = 0.5 if opt.paper_mode else None
+  bar_linewidth = 0.5 
   for i in xrange( num_subcat ):
     if opt.plot_type == "scatter_bar":
       # bars are actually scatters
@@ -453,32 +443,22 @@ def set_legend( ax, opt, legend, legend_labels ):
   if not opt.legend_enabled:
     return
 
-  if not opt.paper_mode:
-    # using fancy translucent legend box
-    leg = ax.legend( legend, \
-                     legend_labels, loc='best', fancybox=True, \
-                     prop={'size':opt.fontsize} , \
-                     columnspacing=opt.legend_columnspacing, \
-                     handlelength=opt.legend_handlelength, \
-                     handletextpad=opt.legend_handletextpad)
-    leg.get_frame().set_alpha( 0.5 )
-  else:
-    leg = ax.legend( legend, \
-                     legend_labels, loc=8, \
-                     bbox_to_anchor=opt.legend_bbox, \
-                     ncol=opt.legend_ncol, \
-                     borderaxespad=0., \
-                     prop={'size':opt.fontsize} , \
-                     columnspacing=opt.legend_columnspacing, \
-                     handlelength=opt.legend_handlelength, \
-                     handletextpad=opt.legend_handletextpad)
-    # we dissappear the box
-    leg.get_frame().set_color("white")
+  leg = ax.legend( legend, \
+                   legend_labels, loc=8, \
+                   bbox_to_anchor=opt.legend_bbox, \
+                   ncol=opt.legend_ncol, \
+                   borderaxespad=0., \
+                   prop={'size':opt.fontsize} , \
+                   columnspacing=opt.legend_columnspacing, \
+                   handlelength=opt.legend_handlelength, \
+                   handletextpad=opt.legend_handletextpad)
+  # we dissappear the box
+  leg.get_frame().set_color("white")
 
 
 def set_common( ax, opt ):
   # Title and Legend stuff.
-  if not opt.paper_mode:
+  if opt.title:
     ax.set_title( opt.title, fontsize=opt.fontsize )
 
   # Set labels for axes
@@ -489,14 +469,13 @@ def set_common( ax, opt ):
   # Set font size for axes
   ax.tick_params( labelsize=opt.fontsize )
 
-  if opt.paper_mode:
-    # enable grid
-    ax.yaxis.grid(True)
-    # turn off top and right border
-    ax.spines['right'].set_visible(False)
-    ax.spines['top'].set_visible(False)
-    ax.xaxis.set_ticks_position('bottom')
-    ax.yaxis.set_ticks_position('left')
+  # enable grid
+  ax.yaxis.grid(True)
+  # turn off top and right border
+  ax.spines['right'].set_visible(False)
+  ax.spines['top'].set_visible(False)
+  ax.xaxis.set_ticks_position('bottom')
+  ax.yaxis.set_ticks_position('left')
 
   # when sharing axes, don't display labels
   if opt.share_axis == 1:
