@@ -9,6 +9,7 @@ Classes:
 Functions:
   add_plot( opt )
   add_line_plot( ax, opt )
+  add_histogram_plot( ax, opt )
   add_scatter_plot( ax, opt )
   add_bar_plot( ax, opt )
   set_legend( ax, opt, legend, legend_labels )
@@ -33,8 +34,15 @@ class PlotOptions:
     self.xlabel = None
     self.bar_width = 0.70
 
-    self.valid_plot_types = ["bar", "stacked_bar", "scatter_bar", "scatter", "line"]
-    self.plot_type = "bar"
+    self.valid_plot_types = [
+        'bar', 
+        'stacked_bar', 
+        'scatter_bar', 
+        'scatter', 
+        'line', 
+        'histogram'
+        ]
+    self.plot_type = 'bar'
 
     # Error bars, lists of 2 lists. The first contains the minimums to draw and the second contains the maximums to draw.
     self.errorbars = None
@@ -169,6 +177,8 @@ def add_plot( opt ):
     add_line_plot( ax, opt )
   elif opt.plot_type == "scatter":
     add_scatter_plot( ax, opt )
+  elif opt.plot_type == "histogram":
+    add_histogram_plot( ax, opt )
   else:
     add_bar_plot( ax, opt )
   opt.plot_idx += 1
@@ -217,6 +227,27 @@ def add_line_plot( ax, opt ):
       legend_labels.append( opt.labels[i] )
 
   set_legend( ax, opt, legend, legend_labels )
+  set_common( ax, opt )
+
+  ax.xaxis.grid(True)
+  ax.yaxis.grid(True)
+
+
+def add_histogram_plot( ax, opt ):
+
+  histograms = []
+  for i in xrange( len( opt.data ) ):
+    n, bins, patches = ax.hist( opt.data[i], \
+                              bins=opt.histogram_bins, \
+                              color=opt.get_color(i) ) 
+    histograms.append(patches[0])
+
+  if opt.yrange is not None:
+    ax.set_ylim( opt.yrange )
+  if opt.xrange is not None:
+    ax.set_xlim( opt.xrange )
+
+  set_legend( ax, opt, histograms, opt.labels )
   set_common( ax, opt )
 
   ax.xaxis.grid(True)
@@ -447,6 +478,7 @@ def add_bar_plot( ax, opt ):
       set_legend( ax, opt, legend_bars, legend_labels )
 
   set_common( ax, opt )
+
 
 def set_legend( ax, opt, legend, legend_labels ):
   if not opt.legend_enabled:
