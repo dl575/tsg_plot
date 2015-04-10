@@ -107,6 +107,7 @@ class PlotOptions:
     self.colors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']
     self.hatch = []
     self.symbols = [ 'o', 'd', '^', 's', 'p', '*', 'x' ]
+    self.linestyles = []
 
     random.seed( 0xdeadbeef )
 
@@ -129,6 +130,13 @@ class PlotOptions:
       return self.symbols[idx]
     else:
       return 'o'
+  def get_linestyle( self, idx ):
+    # get a linestyle from linestyle array if idx is mall, otherwise, default is '-'
+    if idx < len( self.linestyles ):
+      return self.linestyles[idx]
+    else:
+      return '-'
+
 
 
 def add_plot( opt ):
@@ -188,6 +196,7 @@ def add_line_plot( ax, opt ):
     line, = ( ax.plot( c, \
                      marker=opt.symbols[i], \
                      color=opt.get_color(i), \
+                     linestyle=opt.get_linestyle(i), \
                      zorder=5+i ) )
     lines.append(line)
 

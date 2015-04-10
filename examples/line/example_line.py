@@ -30,7 +30,8 @@ def plot(data):
           'legend_ncol' : 3,
           'xlabel' : 'x',
           'ylabel' : 'f(x)',
-          'symbols' : ['.']*3
+          'symbols' : ['.']*3,
+          'linestyles' : ['-', '', '--']
       }
 
   for name, value in attribute_dict.iteritems():
