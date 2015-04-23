@@ -25,6 +25,20 @@ import random
 import sys
 
 
+# This defines various color schemes. These are pulled from colorbrewer2.org
+colors = {
+    'blue3' : ['#deebf7', '#9ecae1', '#3182bd'], # 3-class Blues
+    'blue4' : ['#eff3ff', '#bdd7e7', '#6baed6', '#2171b5'], # 4-class Blues
+    'blue5' : ['#eff3ff', '#bdd7e7', '#6baed6', '#3182bd', '#08519c'], # 5-class Blues
+
+    'qualitative' : ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#f77f00',
+      '#ffff33', '#a65628', '#f781bf', '#999999'], # 9-class Set 1
+    'qualitative_paired' : ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c',
+      '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6', '#6a3d9a',
+      '#ffff99', '#b15928'] # 12-class Paired
+    }
+
+
 class PlotOptions:
 
   def __init__( self ):
