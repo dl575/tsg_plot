@@ -11,6 +11,7 @@ Functions:
   add_line_plot( ax, opt )
   add_histogram_plot( ax, opt )
   add_boxplot_plot( ax, opt )
+  add_heatmap_plot( ax, opt )
   add_scatter_plot( ax, opt )
   add_bar_plot( ax, opt )
   set_legend( ax, opt, legend, legend_labels )
@@ -56,7 +57,8 @@ class PlotOptions:
         'scatter', 
         'line', 
         'histogram',
-        'boxplot'
+        'boxplot',
+        'heatmap'
         ]
     self.plot_type = 'bar'
 
@@ -138,6 +140,16 @@ class PlotOptions:
     # the second contains the maximums to draw.
     self.errorbars = None
 
+    # Heatmap-specific options
+    # Colormap
+    self.heatmap_cmap = None
+    # Show color bar
+    self.heatmap_cbar = False
+    # Label for color bar
+    self.heatmap_cbar_label = None
+    # Fraction to shrink color bar height by
+    self.heatmap_cbar_shrink = 1
+
     # Colors selected from colobrewer2.org for 9 categories, qualitative, print friendly
     self.colors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']
     self.hatch = []
@@ -208,6 +220,8 @@ def add_plot( opt ):
     add_histogram_plot( ax, opt )
   elif opt.plot_type == "boxplot":
     add_boxplot_plot( ax, opt )
+  elif opt.plot_type == "heatmap":
+    add_heatmap_plot( ax, opt )
   else:
     add_bar_plot( ax, opt )
   opt.plot_idx += 1
@@ -322,6 +336,30 @@ def add_boxplot_plot( ax, opt ):
 
   ax.xaxis.grid(True)
   ax.yaxis.grid(True)
+
+
+def add_heatmap_plot( ax, opt ):
+
+  # Plot
+  if opt.heatmap_cmap:
+    cmap = matplotlib.colors.LinearSegmentedColormap( "custom", opt.heatmap_cmap )
+    hm = ax.imshow( opt.data, interpolation='nearest', cmap=cmap )
+  else:
+    hm = ax.imshow( opt.data, interpolation='nearest' )
+
+  # Color bar
+  if opt.heatmap_cbar:
+    ax = opt.fig.add_subplot( opt.num_rows, opt.num_cols, opt.plot_idx )
+    cbar = plt.colorbar( hm, use_gridspec=True, shrink=opt. heatmap_cbar_shrink )
+    if opt.heatmap_cbar_label: 
+      cbar.set_label( opt.heatmap_cbar_label )
+
+  if opt.yrange is not None:
+    ax.set_ylim( opt.yrange )
+  if opt.xrange is not None:
+    ax.set_xlim( opt.xrange )
+
+  set_common( ax, opt )
 
 
 def add_scatter_plot( ax, opt ):
@@ -578,8 +616,6 @@ def set_common( ax, opt ):
   # Set font size for axes
   ax.tick_params( labelsize=opt.fontsize )
 
-  # enable grid
-  ax.yaxis.grid(True)
   # turn off top and right border
   ax.spines['right'].set_visible(False)
   ax.spines['top'].set_visible(False)
