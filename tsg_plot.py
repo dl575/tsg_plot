@@ -10,6 +10,7 @@ Functions:
   add_plot( opt )
   add_line_plot( ax, opt )
   add_histogram_plot( ax, opt )
+  add_boxplot_plot( ax, opt )
   add_scatter_plot( ax, opt )
   add_bar_plot( ax, opt )
   set_legend( ax, opt, legend, legend_labels )
@@ -40,17 +41,10 @@ class PlotOptions:
         'scatter_bar', 
         'scatter', 
         'line', 
-        'histogram'
+        'histogram',
+        'boxplot'
         ]
     self.plot_type = 'bar'
-
-    # Error bars, lists of 2 lists. The first contains the minimums to draw and the second contains the maximums to draw.
-    self.errorbars = None
-
-    # if true, draws an arrow from the earlier to later
-    self.scatter_bar_arrow = False
-    # only draw arrow head if the length is this long
-    self.scatter_bar_arrow_minlen = 0.2
 
     # Can provide multiple file names seperated by spaces
     self.file_name = ""
@@ -96,7 +90,6 @@ class PlotOptions:
     self.legend_handlelength = None
     self.legend_handletextpad = None
 
-
     self.figsize = (8, 6) # (width, height) in inches
 
     self.data = [ [1,3], [2,2], [3,1], [4,5], [1,3] ]
@@ -106,12 +99,32 @@ class PlotOptions:
     self.labels_enabled = False
     self.labels_x_off = 2
     self.labels_y_off = 2
-    #self.labels = [ ["aa", "ab", "ac", "sfa", "asda"],
-    #                [ "a", "b"] ]
     self.labels = None
 
-    #self.colors = [ 'r', 'b', 'g', 'y', 'c', 'm', 'k', 'w' ]
-    # Selected from colobrewer2.org for 9 categories, qualitative, print friendly
+    # Boxplot-specific options
+    # Colors for parts of boxplot
+    self.boxplot_color_boxes    = 'black'
+    self.boxplot_color_medians  = 'black'
+    self.boxplot_color_whiskers = 'black'
+    self.boxplot_color_caps     = 'black'
+    self.boxplot_color_fliers   = 'black'
+
+    # Histogram-specific options
+    # Number of bins to use for histogram
+    self.histogram_bins = 25
+
+    # Scatter bar-specific options
+    # if true, draws an arrow from the earlier to later
+    self.scatter_bar_arrow = False
+    # only draw arrow head if the length is this long
+    self.scatter_bar_arrow_minlen = 0.2
+
+    # Bar-specific options
+    # Error bars, lists of 2 lists. The first contains the minimums to draw and
+    # the second contains the maximums to draw.
+    self.errorbars = None
+
+    # Colors selected from colobrewer2.org for 9 categories, qualitative, print friendly
     self.colors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']
     self.hatch = []
     self.symbols = [ 'o', 'd', '^', 's', 'p', '*', 'x' ]
@@ -179,6 +192,8 @@ def add_plot( opt ):
     add_scatter_plot( ax, opt )
   elif opt.plot_type == "histogram":
     add_histogram_plot( ax, opt )
+  elif opt.plot_type == "boxplot":
+    add_boxplot_plot( ax, opt )
   else:
     add_bar_plot( ax, opt )
   opt.plot_idx += 1
@@ -204,7 +219,7 @@ def add_line_plot( ax, opt ):
   for i in xrange( len( opt.data ) ):
     c = list(opt.data[ i ])
     line, = ( ax.plot( c, \
-                     marker=opt.symbols[i], \
+                     marker=opt.get_symbol(i), \
                      color=opt.get_color(i), \
                      linestyle=opt.get_linestyle(i), \
                      zorder=5+i ) )
@@ -248,6 +263,47 @@ def add_histogram_plot( ax, opt ):
     ax.set_xlim( opt.xrange )
 
   set_legend( ax, opt, histograms, opt.labels )
+  set_common( ax, opt )
+
+  ax.xaxis.grid(True)
+  ax.yaxis.grid(True)
+
+
+def add_boxplot_plot( ax, opt ):
+
+  bp = ax.boxplot( opt.data )
+
+  if opt.yrange is not None:
+    ax.set_ylim( opt.yrange )
+  if opt.xrange is not None:
+    ax.set_xlim( opt.xrange )
+
+  # Set colors
+  plt.setp( bp['boxes'], color=opt.boxplot_color_boxes )
+  plt.setp( bp['medians'], color=opt.boxplot_color_medians )
+  plt.setp( bp['whiskers'], color=opt.boxplot_color_whiskers )
+  plt.setp( bp['caps'], color=opt.boxplot_color_caps )
+  plt.setp( bp['fliers'], color=opt.boxplot_color_fliers )
+
+  # Set x tick labels
+  ax.tick_params( labelsize=opt.fontsize )
+  if opt.labels:
+    if opt.rotate_labels:
+      ax.set_xticklabels( opt.labels, \
+                          verticalalignment="top", \
+                          y=0.01, \
+                          horizontalalignment="left" \
+                                  if opt.rotate_labels_angle > 0 \
+                                  else "right", \
+                          rotation=-opt.rotate_labels_angle, \
+                          fontsize=opt.labels_fontsize )
+    else:
+      ax.set_xticklabels( opt.labels, \
+                          verticalalignment="top", \
+                          y=0.01, \
+                          fontsize=opt.labels_fontsize )
+
+
   set_common( ax, opt )
 
   ax.xaxis.grid(True)
@@ -342,8 +398,6 @@ def add_scatter_plot( ax, opt ):
 def add_bar_plot( ax, opt ):
 
   # Determine number of categories based on labels
-  #num_cat = len( opt.labels[0] )
-  #num_subcat = len( opt.labels[1] )
   num_cat = len(opt.data)
   num_subcat = len(opt.data[0])
 
