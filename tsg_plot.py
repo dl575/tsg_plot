@@ -354,6 +354,36 @@ def add_heatmap_plot( ax, opt ):
     if opt.heatmap_cbar_label: 
       cbar.set_label( opt.heatmap_cbar_label )
 
+  # x tick labels (opt.labels[0]) and y tick labels (opt.labels[1])
+  if opt.labels:
+    if opt.rotate_labels:
+      ax.set_xticklabels( opt.labels[0], \
+                          verticalalignment="top", \
+                          y=0.01, \
+                          horizontalalignment="left" \
+                                  if opt.rotate_labels_angle > 0 \
+                                  else "right", \
+                          rotation=-opt.rotate_labels_angle, \
+                          fontsize=opt.labels_fontsize )
+      ax.set_yticklabels( opt.labels[1], \
+                          verticalalignment="top", \
+                          y=0.01, \
+                          horizontalalignment="left" \
+                                  if opt.rotate_labels_angle > 0 \
+                                  else "right", \
+                          rotation=-opt.rotate_labels_angle, \
+                          fontsize=opt.labels_fontsize )
+
+    else:
+      ax.set_xticklabels( opt.labels[0], \
+                          verticalalignment="top", \
+                          y=0.01, \
+                          fontsize=opt.labels_fontsize )
+      ax.set_yticklabels( opt.labels[1], \
+                          verticalalignment="center", \
+                          y=0.01, \
+                          fontsize=opt.labels_fontsize )
+
   if opt.yrange is not None:
     ax.set_ylim( opt.yrange )
   if opt.xrange is not None:
