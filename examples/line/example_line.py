@@ -31,7 +31,8 @@ def plot(data):
           'xlabel' : 'x',
           'ylabel' : 'f(x)',
           'symbols' : ['.']*3,
-          'linestyles' : ['-', '', '--']
+          'linestyles' : ['-', '', '--'],
+          'markersize' : 8,
       }
 
   for name, value in attribute_dict.iteritems():

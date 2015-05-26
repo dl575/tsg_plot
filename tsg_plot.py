@@ -70,9 +70,13 @@ class PlotOptions:
 
     # set the font size for the rest of things
     self.fontsize = 12
-
     # set the font size for the labels
     self.labels_fontsize = 12
+    # Marker size
+    if self.plot_type == 'scatter':
+      self.markersize = 20
+    else:
+      self.markersize = 6
 
     # used to override default y range. you can provide the range in the
     # form of [min, max]
@@ -246,11 +250,22 @@ def add_line_plot( ax, opt ):
   lines = []
   for i in xrange( len( opt.data ) ):
     c = list(opt.data[ i ])
-    line, = ( ax.plot( c, \
-                     marker=opt.get_symbol(i), \
-                     color=opt.get_color(i), \
-                     linestyle=opt.get_linestyle(i), \
-                     zorder=5+i ) )
+    # x, y data
+    if isinstance(c[0], list):
+      line, = ( ax.plot( c[0], c[1], \
+                       marker=opt.get_symbol(i), \
+                       color=opt.get_color(i), \
+                       linestyle=opt.get_linestyle(i), \
+                       zorder=5+i,
+                       markersize=opt.markersize ) )
+    # y-only data
+    else:
+      line, = ( ax.plot( c, \
+                       marker=opt.get_symbol(i), \
+                       color=opt.get_color(i), \
+                       linestyle=opt.get_linestyle(i), \
+                       zorder=5+i,
+                       markersize=opt.markersize ) )
     lines.append(line)
 
   if opt.yrange is not None:
@@ -419,7 +434,8 @@ def add_scatter_plot( ax, opt ):
     scatters.append( ax.scatter( x, y, \
                                marker=opt.get_symbol(i), \
                                color=opt.get_color(i), \
-                               zorder=5+i ) )
+                               zorder=5+i,
+                               s=opt.markersize ) )
 
     if opt.scatter_bar_arrow and i > 1:
       for j in xrange( len( x ) ):

@@ -22,7 +22,8 @@ attribute_dict = \
         'figsize' : (3.5, 3.5),
         'legend_ncol' : 3,
         'xlabel' : 'x',
-        'ylabel' : 'f(x)'
+        'ylabel' : 'f(x)',
+        'markersize' : 50,
     }
 
 for name, value in attribute_dict.iteritems():
