@@ -128,6 +128,8 @@ class PlotOptions:
     self.boxplot_color_whiskers = 'black'
     self.boxplot_color_caps     = 'black'
     self.boxplot_color_fliers   = 'black'
+    # Size of fliers
+    self.boxplot_fliers_size = None
 
     # Histogram-specific options
     # Number of bins to use for histogram
@@ -328,7 +330,9 @@ def add_boxplot_plot( ax, opt ):
   plt.setp( bp['medians'], color=opt.boxplot_color_medians )
   plt.setp( bp['whiskers'], color=opt.boxplot_color_whiskers )
   plt.setp( bp['caps'], color=opt.boxplot_color_caps )
-  plt.setp( bp['fliers'], color=opt.boxplot_color_fliers )
+  plt.setp( bp['fliers'], marker='x', color=opt.boxplot_color_fliers )
+  if opt.boxplot_fliers_size:
+    plt.setp( bp['fliers'], markersize=opt.boxplot_fliers_size )
 
   # Set x tick labels
   ax.tick_params( labelsize=opt.fontsize )

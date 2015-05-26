@@ -30,6 +30,7 @@ attribute_dict = \
         'boxplot_color_whiskers' : '#4daf4a',
         'boxplot_color_caps'     : '#984ea3',
         'boxplot_color_fliers'   : '#ff7f00',
+        'boxplot_fliers_size' : 10,
 
         'xlabel' : 'Distribution',
         'ylabel' : 'Value',
