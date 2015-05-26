@@ -143,6 +143,8 @@ class PlotOptions:
     # Error bars, lists of 2 lists. The first contains the minimums to draw and
     # the second contains the maximums to draw.
     self.errorbars = None
+    # Annotate bars that exceed max yrange
+    self.overflow_labels_enabled = False
 
     # Heatmap-specific options
     # Colormap
@@ -570,6 +572,11 @@ def add_bar_plot( ax, opt ):
                            bottom=bottom,
                            hatch = opt.get_hatch(i)
                           ) )
+      # Annotate bars that exceed max y-axis value
+      if opt.overflow_labels_enabled:
+        for j in range(len(indexes[i])):
+          if opt.yrange and bar_data[i][j] > opt.yrange[1]:
+            ax.annotate("%d" % (bar_data[i][j]), xy=(indexes[i][j], opt.yrange[1]), xytext=(-len(indexes)*5/2 + i*5 + 1, 1), textcoords='offset points')
 
     if opt.plot_type == "stacked_bar":
       bottom += bar_data[i]
@@ -630,6 +637,8 @@ def add_bar_plot( ax, opt ):
       set_legend( ax, opt, legend_bars, legend_labels )
 
   set_common( ax, opt )
+
+  ax.yaxis.grid(True)
 
 
 def set_legend( ax, opt, legend, legend_labels ):
